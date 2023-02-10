@@ -6,6 +6,8 @@ import { compareHash } from 'src/util/decode.hash';
 import { Repository } from 'typeorm';
 import { User } from '../db/entities/user.entity';
 import { AuthDto } from './dto/user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { EnvsConfig } from 'src/infra/config/envs.config';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,7 @@ export class UserService {
     constructor(
         @Inject('USER_REPOSITORY')
         private userRepository: Repository<User>,
+        private jwtService: JwtService,
     ) { }
 
 
@@ -27,7 +30,7 @@ export class UserService {
      * Autentica usuario
      *
      */
-    async userLogin(dto: AuthDto): Promise<User> {
+    async userLogin(dto: AuthDto): Promise<{ access_token: string }> {
         try {
             this.logger.log('Iniciando a autenticacao do usuario -> ', dto.dsEmail);
 
@@ -43,13 +46,29 @@ export class UserService {
                 console.log('valid', valid);
                 if (!valid) throw new UnauthorizedException('Credenciais inválidas')
             }
-            
-            return user
+
+            delete user.dsSenha
+
+            const token = await this.gerarToken(user)
+
+            return token
         } catch (error) {
             this.logger.error(
-                'Ocorreu um erro ao listar os usuários.' + error.stack,
+                'Ocorreu um erro ao autenticar o usuário -> ' + `${dto.dsEmail}. Error ->` + error.stack,
             );
             throw error;
         }
+    }
+
+    async gerarToken(dto: User) {
+        return {
+            access_token: this.jwtService.sign(
+                { dsEmail: dto.dsEmail },
+                {
+                    secret: EnvsConfig.getJwtSecret(),
+                    expiresIn: '50s',
+                },
+            ),
+        };
     }
 }

@@ -37,32 +37,39 @@ export class EnvsConfig {
         return process.env.DB_HOST || 'localhost';
     }
 
-     /**
-     * Retorna o database host
-     */
+    /**
+    * Retorna o database host
+    */
     static getPortDatabase() {
         return parseInt(process.env.DB_PORT) || 5432;
     }
 
-     /**
-     * Retorna o database host
-     */
-     static getUserDatabase() {
+    /**
+    * Retorna o database host
+    */
+    static getUserDatabase() {
         return process.env.DB_USER || 'postgres';
     }
 
-     /**
-     * Retorna o database host
-     */
-     static getPasswordDatabase() {
+    /**
+    * Retorna o database host
+    */
+    static getPasswordDatabase() {
         return process.env.DB_PASSWORD || 'password';
     }
 
-     /**
-     * Retorna o database host
-     */
-     static getSchemaDatabase() {
+    /**
+    * Retorna o database host
+    */
+    static getSchemaDatabase() {
         return process.env.DB_SCHEMA || 'appdb';
     }
 
+    /**
+     * Retorna o database host
+     */
+    static getJwtSecret() {
+        return process.env.JWT_SECRET || 'jwt-secret';
+    }
+    
 }
