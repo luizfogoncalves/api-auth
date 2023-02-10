@@ -66,7 +66,7 @@ export class EnvsConfig {
     }
 
     /**
-     * Retorna o database host
+     * Retorna o segredo do token JWT
      */
     static getJwtSecret() {
         return process.env.JWT_SECRET || 'jwt-secret';
